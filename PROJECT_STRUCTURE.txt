@@ -1,0 +1,255 @@
+VIBE JOURNAL - PROJECT STRUCTURE
+================================
+
+vibe-journal/
+│
+├── 📄 Configuration Files
+│   ├── package.json              ← Dependencies (Supabase, Bootstrap, Vite)
+│   ├── vite.config.js            ← Vite build configuration
+│   ├── .gitignore                ← Git ignore patterns
+│   └── .env.local.example        ← Environment variables template
+│
+├── 📚 Documentation
+│   ├── README.md                 ← Main documentation
+│   ├── QUICK_START.md            ← Getting started guide
+│   ├── PROJECT_OVERVIEW.md       ← Complete overview
+│   ├── SUPABASE_SETUP.md         ← Database & auth setup
+│   ├── CODE_EXAMPLES.md          ← API reference & examples
+│   └── setup.sh                  ← Setup script
+│
+├── 🎨 Source Code (src/)
+│   │
+│   ├── HTML Pages
+│   │   ├── index.html            ← Landing page
+│   │   ├── login.html            ← User login form
+│   │   ├── register.html         ← User registration form
+│   │   ├── dashboard.html        ← View mood entries
+│   │   └── add-entry.html        ← Create/edit mood entry
+│   │
+│   ├── 🎨 CSS (css/)
+│   │   └── style.css             ← All styles (responsive + dark mode)
+│   │                                Colors, components, animations
+│   │
+│   └── 📝 JavaScript (js/)
+│       ├── supabase.js           ← Supabase client initialization
+│       │                           - Creates Supabase instance
+│       │
+│       ├── auth.js               ← Authentication functions
+│       │                           - register(email, password)
+│       │                           - login(email, password)
+│       │                           - logout()
+│       │                           - getCurrentUser()
+│       │                           - isAuthenticated()
+│       │                           - requireAuth() / requireGuest()
+│       │
+│       ├── dashboard.js          ← Mood CRUD operations
+│       │                           - getMoodEntries()
+│       │                           - getMoodEntry(id)
+│       │                           - createMoodEntry(mood, desc, image)
+│       │                           - updateMoodEntry(id, mood, desc, image)
+│       │                           - deleteMoodEntry(id)
+│       │
+│       └── ui-helpers.js         ← UI utilities
+│                                   - getMoodEmoji(mood)
+│                                   - formatDate(date)
+│                                   - renderMoodCard(entry)
+│                                   - initAddEntryForm()
+
+PAGE FLOW
+=========
+
+Landing (index.html)
+    ↓
+    ├→ New User → Register (register.html) → Login (login.html)
+    └→ Existing User → Login (login.html)
+                            ↓
+                        Dashboard (dashboard.html)
+                            ├→ View Moods (renderMoodCard)
+                            ├→ Create → Add Entry (add-entry.html)
+                            ├→ Edit → Add Entry (add-entry.html?id=...)
+                            └→ Delete → Confirm & refresh
+
+DATABASE STRUCTURE
+==================
+
+Database: PostgreSQL (Supabase)
+
+moods table:
+├── id (UUID, primary key)
+├── user_id (UUID, foreign key → auth.users)
+├── mood (TEXT) - one of: happy, sad, neutral, excited, anxious, calm
+├── description (TEXT) - max 500 chars
+├── image_url (TEXT, optional) - URL from storage
+├── created_at (TIMESTAMP) - auto
+└── updated_at (TIMESTAMP) - auto
+
+Storage: mood_images bucket
+└── Structure: {user_id}/{timestamp}_{filename}
+
+SECURITY MODEL
+==============
+
+Authentication:
+✅ Supabase Auth with email
+✅ Email verification required
+✅ Session management automatic
+
+Authorization (RLS - Row Level Security):
+✅ Users see ONLY their own entries
+✅ Users can ONLY insert/update/delete their own data
+✅ Storage: Users isolated by folder (user_id)
+
+API CALLS FLOW
+==============
+
+Register → Supabase Auth.signUp()
+    ↓
+    Email confirmation needed
+
+Login → Supabase Auth.signInWithPassword()
+    ↓
+    Session created + stored in browser
+
+Dashboard → getMoodEntries() → supabase.from('moods').select()
+    ↓
+    RLS policy filters: where user_id = current_user
+    ↓
+    Only user's entries returned
+
+Create Mood → createMoodEntry()
+    ↓
+    1. Upload image → supabase.storage.upload() (if provided)
+    ↓
+    2. Insert entry → supabase.from('moods').insert()
+    ↓
+    3. RLS: automatically sets user_id = current_user
+
+Update Mood → updateMoodEntry()
+    ↓
+    Verify ownership + upload new image (if provided)
+    ↓
+    Update entry in database
+    ↓
+    RLS policy ensures only owner can update
+
+Delete Mood → deleteMoodEntry()
+    ↓
+    Delete from database
+    ↓
+    RLS policy ensures only owner can delete
+
+CODE STYLE
+==========
+
+✓ No frameworks or complex libraries
+✓ Simple, readable vanilla JavaScript
+✓ Functions organized by module
+✓ Clear error handling with try/catch
+✓ Bootstrap 5 for UI components
+✓ Mobile-first responsive design
+✓ Accessibility support
+
+FILE SIZES (APPROXIMATE)
+========================
+
+HTML files:
+├── index.html          ~3 KB
+├── login.html          ~2 KB
+├── register.html       ~2 KB
+├── dashboard.html      ~2 KB
+└── add-entry.html      ~2 KB
+
+CSS:
+└── style.css           ~8 KB
+
+JavaScript:
+├── supabase.js         ~0.3 KB
+├── auth.js             ~2 KB
+├── dashboard.js        ~3 KB
+└── ui-helpers.js       ~3 KB
+
+Dependencies (installed via npm):
+├── @supabase/supabase-js  ~150 KB
+└── bootstrap             ~170 KB
+
+ENVIRONMENT SETUP
+=================
+
+Development:
+┌─────────────────────────────────┐
+│ Node.js + npm                   │
+│ ↓                               │
+│ npm install                     │
+│ ↓                               │
+│ .env.local with Supabase creds  │
+│ ↓                               │
+│ npm run dev                     │
+│ ↓                               │
+│ localhost:3000                  │
+└─────────────────────────────────┘
+
+Production:
+┌─────────────────────────────────┐
+│ npm run build                   │
+│ ↓                               │
+│ dist/ folder created            │
+│ ↓                               │
+│ Deploy to hosting (Netlify, etc)│
+│ ↓                               │
+│ yourdomain.com                  │
+└─────────────────────────────────┘
+
+CUSTOMIZATION POINTS
+====================
+
+Colors & Theme:
+└── src/css/style.css
+    └── :root { --primary-color, --secondary-color, etc }
+
+Mood Types:
+├── src/add-entry.html (select options)
+├── src/dashboard.html (select options)
+└── src/js/ui-helpers.js (moodEmojis object)
+
+Form Fields:
+├── src/add-entry.html (form inputs)
+├── src/js/dashboard.js (createMoodEntry parameters)
+└── Database: moods table columns
+
+Styling & Layout:
+└── src/css/style.css
+    ├── Bootstrap classes
+    ├── Custom CSS
+    └── Dark mode support
+
+NEXT FEATURES
+=============
+
+Easy to Add:
+[ ] Search entries by date/keyword
+[ ] Filter entries by mood type
+[ ] Mood statistics/charts
+[ ] Export entries as PDF/CSV
+[ ] Date range picker
+
+Medium Complexity:
+[ ] Dark mode toggle
+[ ] Multiple languages
+[ ] Tags for entries
+[ ] Entry reactions/ratings
+
+Advanced:
+[ ] Social features (follow users)
+[ ] Shared moods (with permission)
+[ ] Mood trends over time
+[ ] AI-generated suggestions
+[ ] Mobile app (React Native)
+
+═══════════════════════════════════════════════════════════════════════════
+END OF STRUCTURE OVERVIEW
+
+For detailed information, see:
+- README.md (overview)
+- QUICK_START.md (how to start)
+- CODE_EXAMPLES.md (how to extend)
+- SUPABASE_SETUP.md (database setup)
