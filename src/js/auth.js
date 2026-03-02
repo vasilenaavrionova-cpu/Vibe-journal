@@ -42,10 +42,15 @@ export async function logout() {
 // Get current user
 export async function getCurrentUser() {
   try {
-    const { data, error } = await supabase.auth.getUser()
-    if (error) throw error
-    return data.user
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error) {
+      console.error('Error getting user:', error)
+      return null
+    }
+    console.log('✓ Current user:', user?.email)
+    return user
   } catch (error) {
+    console.error('Auth error:', error)
     return null
   }
 }
@@ -60,7 +65,7 @@ export async function isAuthenticated() {
 export async function requireAuth(redirectPath = '/') {
   const authenticated = await isAuthenticated()
   if (!authenticated) {
-    window.location.href = '/login.html'
+    window.location.href = '/src/login.html'
     return false
   }
   return true
@@ -70,7 +75,7 @@ export async function requireAuth(redirectPath = '/') {
 export async function requireGuest() {
   const authenticated = await isAuthenticated()
   if (authenticated) {
-    window.location.href = '/dashboard.html'
+    window.location.href = '/src/dashboard.html'
     return false
   }
   return true

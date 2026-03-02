@@ -1,10 +1,10 @@
 export default {
-  root: './src',
-  build: {
-    outDir: '../dist',
-    emptyOutDir: true,
-  },
+  envDir: '.',
   server: {
-    port: 3000,
+    port: 3002,
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
   },
 }
