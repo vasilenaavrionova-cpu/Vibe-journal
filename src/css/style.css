@@ -445,6 +445,235 @@ body {
   }
 }
 
+/* ===== DARK MODE ===== */
+.dark-mode {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+.dark-mode body {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+.dark-mode .landing-page {
+  background: linear-gradient(180deg, #1a202c 0%, #0f172a 100%);
+}
+
+.dark-mode .hero-section {
+  background: linear-gradient(135deg, #1a1f4d 0%, #0f172a 100%);
+}
+
+.dark-mode .hero-section::before {
+  background: radial-gradient(circle, rgba(91, 95, 255, 0.2) 0%, transparent 70%);
+}
+
+.dark-mode .hero-section h1 {
+  color: #f3f4f6;
+}
+
+.dark-mode .hero-section .lead {
+  color: #9ca3af;
+}
+
+.dark-mode .features-section {
+  background: #111827;
+}
+
+.dark-mode .features-section h2 {
+  color: #f3f4f6;
+}
+
+.dark-mode .feature-card {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: #2d3748;
+}
+
+.dark-mode .feature-card:hover {
+  background: #374151;
+  border-color: #5b5fff;
+}
+
+.dark-mode .feature-card h5 {
+  color: #f3f4f6;
+}
+
+.dark-mode .feature-card p {
+  color: #d1d5db;
+}
+
+.dark-mode .footer {
+  background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+  color: #9ca3af;
+}
+
+.dark-mode .auth-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1f4d 100%);
+}
+
+.dark-mode .auth-card {
+  background: #1f2937;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode .auth-card h1 {
+  color: #f3f4f6;
+}
+
+.dark-mode .auth-card .text-muted {
+  color: #9ca3af;
+}
+
+.dark-mode .form-label {
+  color: #e5e7eb;
+}
+
+.dark-mode .form-control {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark-mode .form-control:focus {
+  background-color: #374151;
+  border-color: #5b5fff;
+  color: #f3f4f6;
+}
+
+.dark-mode .form-control::placeholder {
+  color: #9ca3af;
+}
+
+.dark-mode .dashboard {
+  background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+}
+
+.dark-mode .mood-card {
+  background: #1f2937;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .mood-card:hover {
+  box-shadow: 0 12px 30px rgba(91, 95, 255, 0.3);
+}
+
+.dark-mode .mood-card h5 {
+  color: #f3f4f6;
+}
+
+.dark-mode .mood-card .date {
+  color: #9ca3af;
+}
+
+.dark-mode .mood-card p {
+  color: #d1d5db;
+}
+
+.dark-mode .empty-state {
+  color: #9ca3af;
+}
+
+.dark-mode .empty-state h3 {
+  color: #d1d5db;
+}
+
+.dark-mode .alert-danger {
+  background: #7f1d1d;
+  color: #fecaca;
+  border-left-color: #dc2626;
+}
+
+.dark-mode .fun-page {
+  background: linear-gradient(180deg, #1a1f4d 0%, #111827 100%);
+}
+
+.dark-mode .fun-card {
+  background: #1f2937;
+  border-color: #2d3748;
+  box-shadow: 0 10px 30px rgba(91, 95, 255, 0.2);
+}
+
+.dark-mode .fun-text {
+  color: #d1d5db;
+}
+
+.dark-mode .booster-pill {
+  background: #2d3748;
+  color: #c7d2fe;
+  border-color: #4b5563;
+}
+
+.dark-mode .info-page {
+  background: linear-gradient(180deg, #1a1f4d 0%, #111827 100%);
+}
+
+.dark-mode .info-hero {
+  background: linear-gradient(135deg, #1a1f4d 0%, #0f172a 100%);
+  box-shadow: 0 12px 30px rgba(91, 95, 255, 0.2);
+}
+
+.dark-mode .info-card {
+  background: #1f2937;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .info-card h5,
+.dark-mode .info-card h4 {
+  color: #f3f4f6;
+}
+
+.dark-mode .info-card p,
+.dark-mode .info-card li {
+  color: #d1d5db;
+}
+
+.dark-mode .info-tip-card {
+  background: #374151;
+  box-shadow: 0 10px 24px rgba(91, 95, 255, 0.15);
+}
+
+.dark-mode .info-tip-card h5 {
+  color: #f3f4f6;
+}
+
+.dark-mode .info-tip-card p {
+  color: #d1d5db;
+}
+
+.dark-mode-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.dark-mode .bg-light {
+  background-color: #1f2937 !important;
+}
+
+.dark-mode .text-muted {
+  color: #9ca3af !important;
+}
+
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: #f3f4f6;
+}
+
 /* ===== FUN PAGES (MOOD QUEST + VIBE LAB) ===== */
 .fun-page {
   background: linear-gradient(180deg, #f5f4ff 0%, #ffffff 100%);
