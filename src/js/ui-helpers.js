@@ -87,34 +87,87 @@ async function handleFormSubmit(entryId) {
   }
 }
 
-// Render mood entry card
+// Render mood entry card with Bootstrap 5
 export function renderMoodCard(entry) {
   const card = document.createElement('div')
-  card.className = 'col-md-6 col-lg-4 mb-3'
+  card.className = 'col-12 col-sm-6 col-lg-4'
+  
+  const emoji = getMoodEmoji(entry.mood)
+  const dateStr = formatDate(entry.created_at)
+  const moodBadgeColor = getMoodBadgeColor(entry.mood)
+  
   card.innerHTML = `
-    <div class="card h-100 mood-card">
+    <div class="card h-100 mood-card shadow-sm border-0 overflow-hidden transition">
       ${
         entry.image_url
-          ? `<img src="${entry.image_url}" class="card-img-top" alt="Mood image" style="height: 200px; object-fit: cover;">`
-          : ''
+          ? `<img src="${entry.image_url}" class="card-img-top" alt="Mood moment" style="height: 180px; object-fit: cover; transition: transform 0.3s ease;" />`
+          : `<div class="bg-gradient" style="height: 180px; background: linear-gradient(135deg, ${getMoodGradient(entry.mood)}); display: flex; align-items: center; justify-content: center; font-size: 4rem;">${emoji}</div>`
       }
+      
       <div class="card-body d-flex flex-column">
-        <div class="mb-2">
-          <span class="mood-emoji" style="font-size: 2.5rem;">${getMoodEmoji(entry.mood)}</span>
-          <span class="badge bg-primary ms-2">${entry.mood}</span>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="fs-2">${emoji}</span>
+          <span class="badge ${moodBadgeColor} text-uppercase fw-semibold">${entry.mood}</span>
         </div>
-        <p class="card-text">${entry.description}</p>
-        <div class="mt-auto">
-          <small class="text-muted d-block mb-2">${formatDate(entry.created_at)}</small>
-          <div class="btn-group btn-group-sm w-100" role="group">
-            <a href="/add-entry.html?id=${entry.id}" class="btn btn-outline-primary">Edit</a>
-            <button class="btn btn-outline-danger" onclick="window.deleteEntry('${entry.id}')">Delete</button>
+        
+        <p class="card-text text-dark mb-3 flex-grow-1">${escapeHtml(entry.description)}</p>
+        
+        <div class="border-top pt-3">
+          <small class="text-muted d-block mb-3">
+            <i class="bi bi-calendar-event"></i> ${dateStr}
+          </small>
+          
+          <div class="d-flex gap-2">
+            <a href="./add-entry.html?id=${entry.id}" class="btn btn-sm btn-outline-primary flex-grow-1">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+            <button class="btn btn-sm btn-outline-danger" onclick="window.deleteEntry('${entry.id}')">
+              <i class="bi bi-trash"></i> Delete
+            </button>
           </div>
         </div>
       </div>
     </div>
   `
   return card
+}
+
+// Get mood badge color
+function getMoodBadgeColor(mood) {
+  const colors = {
+    happy: 'bg-success',
+    sad: 'bg-info',
+    neutral: 'bg-secondary',
+    excited: 'bg-warning text-dark',
+    anxious: 'bg-danger',
+    calm: 'bg-primary',
+  }
+  return colors[mood] || 'bg-secondary'
+}
+
+// Get mood gradient for placeholder
+function getMoodGradient(mood) {
+  const gradients = {
+    happy: '#FFD93D, #FFA500',
+    sad: '#4A90E2, #357ABD',
+    neutral: '#9B9B9B, #6B6B6B',
+    excited: '#FF6B6B, #FF8E53',
+    anxious: '#E74C3C, #C0392B',
+    calm: '#50C878, #3A9B5C',
+  }
+  return gradients[mood] || '#9B9B9B, #6B6B6B'
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  }
+  return text.replace(/[&<>"']/g, (m) => map[m])
 }
 
 // Make deleteEntry globally available
