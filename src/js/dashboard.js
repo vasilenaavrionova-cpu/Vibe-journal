@@ -1,17 +1,23 @@
 import { supabase } from './supabase.js'
 import { getCurrentUser } from './auth.js'
 
-// Get all mood entries for current user
-export async function getMoodEntries() {
+// Get all mood entries for current user (with optional mood filter)
+export async function getMoodEntries(moodFilter = 'all') {
   try {
     const user = await getCurrentUser()
     if (!user) return { success: false, error: 'Not authenticated' }
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('moods')
       .select('*')
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+
+    // Apply mood filter if not 'all'
+    if (moodFilter !== 'all') {
+      query = query.eq('mood', moodFilter)
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false })
 
     if (error) throw error
     return { success: true, entries: data }
