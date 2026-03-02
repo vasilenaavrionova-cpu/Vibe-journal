@@ -71,11 +71,11 @@ export async function requireAuth(redirectPath = '/') {
   return true
 }
 
-// Redirect to dashboard if already authenticated
+// Redirect to info page if already authenticated
 export async function requireGuest() {
   const authenticated = await isAuthenticated()
   if (authenticated) {
-    window.location.href = '/src/dashboard.html'
+    window.location.href = '/src/info.html'
     return false
   }
   return true

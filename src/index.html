@@ -94,11 +94,11 @@
   <script type="module">
     import { getCurrentUser } from './js/auth.js'
     
-    // Redirect to dashboard if already logged in
+    // Redirect to info page if already logged in
     const user = await getCurrentUser()
     if (user) {
-      console.log('✓ User already logged in, redirecting to dashboard')
-      window.location.href = '/src/dashboard.html'
+      console.log('✓ User already logged in, redirecting to info page')
+      window.location.href = '/src/info.html'
     }
   </script>
 </body>

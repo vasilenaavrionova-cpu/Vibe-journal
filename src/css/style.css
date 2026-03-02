@@ -494,3 +494,45 @@ body {
   border-width: 2px;
   transition: all 0.35s ease;
 }
+
+/* ===== INFO PAGE ===== */
+.info-page {
+  background: linear-gradient(180deg, #f5f4ff 0%, #ffffff 100%);
+  min-height: 100vh;
+  display: block;
+  position: relative;
+}
+
+.info-page .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  width: 100%;
+}
+
+.info-main {
+  width: 100%;
+  display: block;
+}
+
+.info-hero {
+  border-radius: 24px;
+  background: linear-gradient(135deg, #f5f4ff 0%, #edebff 100%);
+  box-shadow: 0 12px 30px rgba(91, 95, 255, 0.12);
+}
+
+.info-kicker {
+  color: #5b5fff;
+  letter-spacing: 0.08em;
+}
+
+.info-card {
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(31, 41, 55, 0.08);
+}
+
+.info-tip-card {
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(91, 95, 255, 0.1);
+}
