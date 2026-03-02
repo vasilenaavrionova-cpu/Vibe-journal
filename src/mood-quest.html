@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood Quest - Vibe Journal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/css/style.css" />
+</head>
+<body class="fun-page">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/src/index.html">
+        <span class="brand-emoji">✨</span> Vibe Journal
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/src/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/src/vibe-lab.html">Vibe Lab</a></li>
+          <li class="nav-item"><a class="nav-link" href="/src/dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">🗺️ Mood Quest</h1>
+        <p class="lead text-muted">Spin up a tiny adventure for your current vibe.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+          <div class="card fun-card">
+            <div class="card-body p-4 p-md-5 text-center">
+              <div class="quest-wheel mb-3">🎲</div>
+              <h3 class="mb-3">Today's Emotional Side Quest</h3>
+              <p id="questText" class="fun-text mb-4">Click the button and get a playful challenge in under 3 seconds.</p>
+              <button id="rollQuestBtn" class="btn btn-primary btn-lg px-4">Roll a Quest</button>
+              <div class="mt-4">
+                <span id="questTag" class="quest-tag d-none"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="card fun-card border-0">
+            <div class="card-body p-4">
+              <h4 class="mb-3">⚡ Bonus streak boosters</h4>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="booster-pill">Take 5 deep breaths</span>
+                <span class="booster-pill">Drink a glass of water</span>
+                <span class="booster-pill">Send one kind message</span>
+                <span class="booster-pill">Stretch for 2 minutes</span>
+                <span class="booster-pill">Write one proud moment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <p class="mb-0">Mood Quest complete? Log it in your journal ✨</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const quests = [
+      { text: 'Create a 3-song “right now” playlist and name it after your mood.', tag: 'Creative 🎵' },
+      { text: 'Take a 7-minute walk and snap one photo of something calming.', tag: 'Calm 🌿' },
+      { text: 'Write a 2-line poem about today, no overthinking allowed.', tag: 'Expressive ✍️' },
+      { text: 'Do a “gratitude speedrun”: list 5 tiny good things in 60 seconds.', tag: 'Positive 🌈' },
+      { text: 'Text someone: “Thinking of you today 💛”.', tag: 'Connection 🤝' },
+      { text: 'Put on your favorite song and do a 1-minute dance break.', tag: 'Energy ⚡' }
+    ]
+
+    const questText = document.getElementById('questText')
+    const questTag = document.getElementById('questTag')
+    const rollQuestBtn = document.getElementById('rollQuestBtn')
+
+    rollQuestBtn.addEventListener('click', () => {
+      const quest = quests[Math.floor(Math.random() * quests.length)]
+      questText.textContent = quest.text
+      questTag.textContent = quest.tag
+      questTag.classList.remove('d-none')
+    })
+  </script>
+</body>
+</html>

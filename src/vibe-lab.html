@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Lab - Vibe Journal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/css/style.css" />
+</head>
+<body class="fun-page">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/src/index.html">
+        <span class="brand-emoji">✨</span> Vibe Journal
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/src/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/src/mood-quest.html">Mood Quest</a></li>
+          <li class="nav-item"><a class="nav-link" href="/src/dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">🧪 Vibe Lab</h1>
+        <p class="lead text-muted">Blend your mood with color + music energy and get a daily aura card.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-lg-5">
+          <div class="card fun-card h-100">
+            <div class="card-body p-4">
+              <h4 class="mb-3">Build your aura</h4>
+              <label for="energyRange" class="form-label">Energy level</label>
+              <input id="energyRange" type="range" class="form-range" min="1" max="10" value="6" />
+
+              <label for="moodColor" class="form-label mt-3">Mood color</label>
+              <input id="moodColor" type="color" class="form-control form-control-color" value="#5b5fff" title="Choose your mood color" />
+
+              <button id="mixAuraBtn" class="btn btn-primary mt-4 w-100">Mix My Aura</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card fun-card h-100 aura-card" id="auraCard">
+            <div class="card-body p-4 p-md-5">
+              <h3 id="auraTitle">Your aura will appear here ✨</h3>
+              <p id="auraDescription" class="fun-text mb-4">Pick your energy + color and let the lab do the rest.</p>
+              <div class="d-flex flex-wrap gap-2">
+                <span id="auraBadge1" class="booster-pill d-none"></span>
+                <span id="auraBadge2" class="booster-pill d-none"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <p class="mb-0">Experiment complete. Your vibe looks amazing 🔮</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const titles = [
+      'Cosmic Focus',
+      'Sunset Spark',
+      'Soft Thunder',
+      'Neon Calm',
+      'Golden Drift'
+    ]
+
+    const descriptions = {
+      low: 'You are in restore mode. Keep things gentle and protect your peace.',
+      medium: 'Balanced and grounded. Great time for progress with softness.',
+      high: 'Big momentum today. Channel it into one meaningful win.'
+    }
+
+    const energyRange = document.getElementById('energyRange')
+    const moodColor = document.getElementById('moodColor')
+    const mixAuraBtn = document.getElementById('mixAuraBtn')
+    const auraCard = document.getElementById('auraCard')
+    const auraTitle = document.getElementById('auraTitle')
+    const auraDescription = document.getElementById('auraDescription')
+    const auraBadge1 = document.getElementById('auraBadge1')
+    const auraBadge2 = document.getElementById('auraBadge2')
+
+    mixAuraBtn.addEventListener('click', () => {
+      const energy = Number(energyRange.value)
+      const color = moodColor.value
+      const zone = energy <= 3 ? 'low' : energy <= 7 ? 'medium' : 'high'
+      const title = titles[Math.floor(Math.random() * titles.length)]
+
+      auraCard.style.background = `linear-gradient(135deg, ${color}22 0%, #ffffff 100%)`
+      auraCard.style.borderColor = `${color}66`
+
+      auraTitle.textContent = `${title} • Level ${energy}`
+      auraDescription.textContent = descriptions[zone]
+
+      auraBadge1.textContent = `Energy ${energy}/10`
+      auraBadge2.textContent = zone === 'low' ? 'Recovery Mode 🛋️' : zone === 'medium' ? 'Flow Mode 🌊' : 'Power Mode 🚀'
+      auraBadge1.classList.remove('d-none')
+      auraBadge2.classList.remove('d-none')
+    })
+  </script>
+</body>
+</html>

@@ -444,3 +444,53 @@ body {
     font-size: 0.95rem;
   }
 }
+
+/* ===== FUN PAGES (MOOD QUEST + VIBE LAB) ===== */
+.fun-page {
+  background: linear-gradient(180deg, #f5f4ff 0%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.fun-card {
+  border: 2px solid #ecebff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(91, 95, 255, 0.12);
+  background: white;
+}
+
+.fun-text {
+  color: #4b5563;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.quest-wheel {
+  font-size: 3.5rem;
+  display: inline-block;
+  animation: bounce 2.5s ease-in-out infinite;
+}
+
+.quest-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+  color: white;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.booster-pill {
+  background: #f1f0ff;
+  color: #4c1d95;
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.aura-card {
+  border-width: 2px;
+  transition: all 0.35s ease;
+}
