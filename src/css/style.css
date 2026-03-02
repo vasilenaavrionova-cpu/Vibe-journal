@@ -804,6 +804,23 @@ body {
   font-weight: 600;
 }
 
+.prediction-emoji {
+  display: inline-block;
+  font-size: 4rem;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
 .aura-card {
   border-width: 2px;
   transition: all 0.35s ease;

@@ -51,6 +51,31 @@
           </div>
         </div>
 
+        <!-- Tomorrow's Emotional Forecast -->
+        <div class="col-lg-8">
+          <div class="card fun-card border-0" style="background: linear-gradient(135deg, #f5f4ff 0%, #e9e7ff 100%); border: 2px solid #e9e7ff !important;">
+            <div class="card-body p-4 text-center">
+              <h4 class="mb-3">🔮 Tomorrow's Emotional Forecast</h4>
+              <div id="predictionLoading" class="text-muted">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                Analyzing your recent vibes...
+              </div>
+              <div id="predictionResult" class="d-none">
+                <div class="prediction-emoji mb-3" id="predictionEmoji">🌈</div>
+                <h5 class="fw-bold mb-2" id="predictionMood">Mixed Vibes</h5>
+                <p class="text-muted mb-0" id="predictionMessage">Expect emotional variety. Stay open 🌈</p>
+                <small class="text-muted d-block mt-3" style="font-size: 0.85rem;">Based on your last 5 entries</small>
+              </div>
+              <div id="predictionNoData" class="d-none text-muted">
+                <div class="mb-2" style="font-size: 3rem; opacity: 0.5;">📊</div>
+                <p>Not enough data to predict. Add more entries to unlock this feature!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-lg-8">
           <div class="card fun-card border-0">
             <div class="card-body p-4">
@@ -96,6 +121,131 @@
       questTag.textContent = quest.tag
       questTag.classList.remove('d-none')
     })
+  </script>
+
+  <script type="module">
+    // === Predict Tomorrow's Mood ===
+    import { supabase } from './js/supabase.js'
+    import { getCurrentUser } from './js/auth.js'
+
+    // Mood to emoji mapping
+    const moodEmojiMap = {
+      happy: '😊',
+      sad: '😢',
+      neutral: '😐',
+      angry: '😠',
+      excited: '🤩',
+      anxious: '😰',
+      tired: '😴',
+      calm: '😌',
+      mixed: '🌈'
+    }
+
+    // Mood to message mapping
+    const moodMessageMap = {
+      happy: 'Your recent energy suggests a bright day ahead ☀️',
+      sad: 'Tomorrow may feel reflective. Take care of yourself 💙',
+      neutral: 'A balanced day is coming. Stay grounded 🌿',
+      angry: 'Energy might run high. Channel it positively 🔥',
+      excited: 'Adventure awaits! Ride the wave of excitement 🎉',
+      anxious: 'Tomorrow could feel uncertain. Practice self-compassion 🕊️',
+      tired: 'Rest is calling. Honor your need for recovery 💤',
+      calm: 'Peaceful vibes ahead. Enjoy the tranquility 🌊',
+      mixed: 'Expect emotional variety. Stay open and flexible 🌈'
+    }
+
+    // Predict tomorrow's mood based on last 5 entries
+    async function predictTomorrowMood() {
+      const predictionLoading = document.getElementById('predictionLoading')
+      const predictionResult = document.getElementById('predictionResult')
+      const predictionNoData = document.getElementById('predictionNoData')
+      const predictionEmoji = document.getElementById('predictionEmoji')
+      const predictionMood = document.getElementById('predictionMood')
+      const predictionMessage = document.getElementById('predictionMessage')
+
+      try {
+        // Get current user
+        const user = await getCurrentUser()
+        if (!user) {
+          predictionLoading.classList.add('d-none')
+          predictionNoData.classList.remove('d-none')
+          document.getElementById('predictionNoData').innerHTML = `
+            <div class="mb-2" style="font-size: 3rem; opacity: 0.5;">🔒</div>
+            <p>Please log in to see your mood prediction</p>
+          `
+          return
+        }
+
+        // Fetch last 5 entries
+        const { data: entries, error } = await supabase
+          .from('moods')
+          .select('mood')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(5)
+
+        if (error) throw error
+
+        // Check if we have enough data
+        if (!entries || entries.length === 0) {
+          predictionLoading.classList.add('d-none')
+          predictionNoData.classList.remove('d-none')
+          return
+        }
+
+        // Count mood frequencies
+        const moodCounts = {}
+        entries.forEach(entry => {
+          const mood = entry.mood.toLowerCase()
+          moodCounts[mood] = (moodCounts[mood] || 0) + 1
+        })
+
+        // Find the most common mood
+        let maxCount = 0
+        let predictedMood = 'mixed'
+        let tieExists = false
+
+        Object.entries(moodCounts).forEach(([mood, count]) => {
+          if (count > maxCount) {
+            maxCount = count
+            predictedMood = mood
+            tieExists = false
+          } else if (count === maxCount && maxCount > 0) {
+            tieExists = true
+          }
+        })
+
+        // If there's a tie or no clear winner, predict mixed
+        if (tieExists || maxCount === 1 && Object.keys(moodCounts).length >= 3) {
+          predictedMood = 'mixed'
+        }
+
+        // Display prediction
+        const emoji = moodEmojiMap[predictedMood] || '🌈'
+        const message = moodMessageMap[predictedMood] || 'Your journey continues. Stay present 🌟'
+        const moodCapitalized = predictedMood.charAt(0).toUpperCase() + predictedMood.slice(1)
+
+        predictionEmoji.textContent = emoji
+        predictionEmoji.style.fontSize = '4rem'
+        predictionMood.textContent = moodCapitalized
+        predictionMessage.textContent = message
+
+        predictionLoading.classList.add('d-none')
+        predictionResult.classList.remove('d-none')
+
+      } catch (error) {
+        console.error('Prediction error:', error)
+        predictionLoading.classList.add('d-none')
+        predictionNoData.classList.remove('d-none')
+        document.getElementById('predictionNoData').innerHTML = `
+          <div class="mb-2" style="font-size: 3rem; opacity: 0.5;">⚠️</div>
+          <p>Could not load prediction. Try refreshing the page.</p>
+        `
+      }
+    }
+
+    // Run prediction on page load
+    predictTomorrowMood()
   </script>
 </body>
 </html>
