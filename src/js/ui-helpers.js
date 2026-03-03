@@ -1,5 +1,3 @@
-import { createMoodEntry, getMoodEntry, updateMoodEntry } from './dashboard.js'
-
 const moodEmojis = {
   happy: '😊',
   sad: '😢',
@@ -28,6 +26,7 @@ export function formatDate(date) {
 
 // Initialize add entry form
 export async function initAddEntryForm() {
+  const { createMoodEntry, getMoodEntry, updateMoodEntry } = await import('./dashboard.js')
   const form = document.getElementById('moodForm')
   const submitBtn = document.getElementById('submitBtn')
   const entryId = new URLSearchParams(window.location.search).get('id')
@@ -35,17 +34,17 @@ export async function initAddEntryForm() {
   if (entryId) {
     // Edit mode
     submitBtn.textContent = 'Update Mood'
-    await loadEntryToForm(entryId)
+    await loadEntryToForm(entryId, getMoodEntry)
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
-    await handleFormSubmit(entryId)
+    await handleFormSubmit(entryId, createMoodEntry, updateMoodEntry)
   })
 }
 
 // Load entry data into form for editing
-async function loadEntryToForm(id) {
+async function loadEntryToForm(id, getMoodEntry) {
   const result = await getMoodEntry(id)
   if (!result.success) {
     alert(`Error loading entry: ${result.error}`)
@@ -58,7 +57,7 @@ async function loadEntryToForm(id) {
 }
 
 // Handle form submission
-async function handleFormSubmit(entryId) {
+async function handleFormSubmit(entryId, createMoodEntry, updateMoodEntry) {
   const mood = document.getElementById('moodSelect').value
   const description = document.getElementById('description').value
   const imageFile = document.getElementById('imageInput').files[0]
