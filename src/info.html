@@ -8,20 +8,32 @@
   <link rel="stylesheet" href="/src/css/style.css" />
 </head>
 <body class="info-page" data-page="info">
-  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-    <div class="container">
-      <a class="navbar-brand" href="/src/info.html">
-        <span class="brand-emoji">✨</span> Vibe Journal
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="/src/index.html">
+        <span style="font-size: 1.8rem; margin-right: 0.5rem;">✨</span>Vibe Journal
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item"><a class="nav-link active" href="/src/info.html">Info</a></li>
-          <li class="nav-item"><a class="nav-link" href="/src/dashboard.html">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="/src/add-entry.html">New Entry</a></li>
-          <li class="nav-item ms-lg-2">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="/src/info.html" class="nav-link">Info</a>
+          </li>
+          <li class="nav-item">
+            <a href="/src/dashboard.html" class="nav-link">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a href="/src/mood-quest.html" class="nav-link">Mood Quest</a>
+          </li>
+          <li class="nav-item">
+            <a href="/src/vibe-lab.html" class="nav-link">Vibe Lab</a>
+          </li>
+          <li class="nav-item">
+            <a href="/src/add-entry.html" class="btn btn-light btn-sm me-2">+ New Entry</a>
+          </li>
+          <li class="nav-item">
             <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
           </li>
         </ul>
