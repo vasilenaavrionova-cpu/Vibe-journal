@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/src/css/style.css" />
 </head>
-<body class="bg-light">
+<body data-page="dashboard">
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);">
     <div class="container-fluid">
@@ -43,68 +43,65 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="py-5">
-    <div class="container-lg">
-      <!-- Header Section -->
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1 class="display-5 fw-bold mb-2">Your Mood Journal</h1>
-          <p class="text-muted lead">Track your emotions and precious moments</p>
-          <hr class="my-3" style="opacity: 0.2;">
-          <!-- Emotion Timeline Replay Button -->
-          <button id="replay-timeline-btn" class="btn btn-outline-primary mb-3">
-            <span class="me-2">🔄</span> Replay My Week
-          </button>
-          <!-- Timeline Replay Modal Overlay -->
-          <div id="timeline-replay-overlay" class="timeline-replay-overlay d-none">
-            <div class="timeline-replay-modal">
-              <div id="timeline-replay-content"></div>
-              <button id="timeline-replay-close" class="btn btn-secondary mt-3">Close</button>
-            </div>
+  <main class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <h1 class="display-5 fw-bold mb-2">Your Mood Journal</h1>
+        <p class="text-muted lead">Track your emotions and precious moments</p>
+        <hr class="my-3" style="opacity: 0.2;">
+        <!-- Emotion Timeline Replay Button -->
+        <button id="replay-timeline-btn" class="btn btn-outline-primary mb-3">
+          <span class="me-2">🔄</span> Replay My Week
+        </button>
+        <!-- Timeline Replay Modal Overlay -->
+        <div id="timeline-replay-overlay" class="timeline-replay-overlay d-none">
+          <div class="timeline-replay-modal">
+            <div id="timeline-replay-content"></div>
+            <button id="timeline-replay-close" class="btn btn-secondary mt-3">Close</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Mood Filter -->
-      <div class="row mb-4">
-        <div class="col-12 col-md-6 col-lg-4">
-          <label for="moodFilter" class="form-label fw-semibold">Filter by mood:</label>
-          <select id="moodFilter" class="form-select">
-            <option value="all">All Moods</option>
-            <option value="happy">😊 Happy</option>
-            <option value="sad">😢 Sad</option>
-            <option value="neutral">😐 Neutral</option>
-            <option value="excited">🤩 Excited</option>
-            <option value="anxious">😰 Anxious</option>
-            <option value="calm">😌 Calm</option>
-          </select>
-        </div>
+    <!-- Mood Filter -->
+    <div class="row mb-4">
+      <div class="col-12 col-md-6 col-lg-4">
+        <label for="moodFilter" class="form-label fw-semibold">Filter by mood:</label>
+        <select id="moodFilter" class="form-select">
+          <option value="all">All Moods</option>
+          <option value="happy">😊 Happy</option>
+          <option value="sad">😢 Sad</option>
+          <option value="neutral">😐 Neutral</option>
+          <option value="excited">🤩 Excited</option>
+          <option value="anxious">😰 Anxious</option>
+          <option value="calm">😌 Calm</option>
+        </select>
       </div>
+    </div>
 
-      <!-- Loading Spinner -->
-      <div id="loadingSpinner" class="text-center py-5">
-        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <p class="text-muted">Loading your moods...</p>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="text-muted">Loading your moods...</p>
+    </div>
 
-      <!-- Mood Cards Grid -->
-      <div id="entriesContainer" class="row g-4 d-none"></div>
+    <!-- Mood Cards Grid -->
+    <div id="entriesContainer" class="row g-4 d-none"></div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="text-center py-5 d-none">
-        <div style="font-size: 5rem; margin-bottom: 1rem; opacity: 0.5;">📔</div>
-        <h3 class="mb-2">No moods recorded yet</h3>
-        <p class="text-muted mb-4">Start capturing your feelings and moments today</p>
-        <a href="./add-entry.html" class="btn btn-primary btn-lg">Create First Entry</a>
-      </div>
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-5 d-none">
+      <div style="font-size: 5rem; margin-bottom: 1rem; opacity: 0.5;">📔</div>
+      <h3 class="mb-2">No moods recorded yet</h3>
+      <p class="text-muted mb-4">Start capturing your feelings and moments today</p>
+      <a href="./add-entry.html" class="btn btn-primary btn-lg">Create First Entry</a>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-light py-4 mt-5">
-    <div class="container-fluid text-center">
+  <footer class="footer mt-5">
+    <div class="container text-center">
       <p class="mb-0">&copy; 2026 Vibe Journal • Track your mood, live in the moment 🌈</p>
     </div>
   </footer>
