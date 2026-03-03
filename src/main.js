@@ -56,15 +56,7 @@ async function initInfoPage() {
 		emailSlot.textContent = user.email
 	}
 
-	const logoutBtn = document.getElementById('logoutBtn')
-	if (logoutBtn) {
-		logoutBtn.addEventListener('click', async () => {
-			const result = await logout()
-			if (result.success) {
-				window.location.href = '/src/login.html'
-			}
-		})
-	}
+	
 }
 
 async function bootstrap() {
@@ -78,5 +70,20 @@ async function bootstrap() {
 		await initInfoPage()
 	}
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('logoutBtn')
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+      e.preventDefault()
+
+      const result = await logout()
+
+      if (result.success) {
+        window.location.href = '/src/login.html'
+      }
+    })
+  }
+})
 
 bootstrap()
