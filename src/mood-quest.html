@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/src/css/style.css" />
 </head>
 <body class="fun-page" data-page="mood-quest">
-  <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);">
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top w-100" style="background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);">
     <div class="container-fluid">
       <a class="navbar-brand fw-bold" href="/src/index.html">
         <span style="font-size: 1.8rem; margin-right: 0.5rem;">✨</span>Vibe Journal
@@ -41,29 +41,29 @@
     </div>
   </nav>
 
-  <main class="container py-5">
-    <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold">🗺️ Mood Quest</h1>
-      <p class="lead text-muted">Spin up a tiny adventure for your current vibe.</p>
-    </div>
+  <main>
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">🗺️ Mood Quest</h1>
+        <p class="lead text-muted">Spin up a tiny adventure for your current vibe.</p>
+      </div>
 
-    <div class="row g-4 justify-content-center">
-      <div class="col-lg-8">
-        <div class="card fun-card">
-          <div class="card-body p-4 p-md-5 text-center">
-            <div class="quest-wheel mb-3">🎲</div>
-            <h3 class="mb-3">Today's Emotional Side Quest</h3>
-            <p id="questText" class="fun-text mb-4">Click the button and get a playful challenge in under 3 seconds.</p>
-            <button id="rollQuestBtn" class="btn btn-primary btn-lg px-4">Roll a Quest</button>
-            <div class="mt-4">
-              <span id="questTag" class="quest-tag d-none"></span>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card fun-card mb-4">
+            <div class="card-body p-4 p-md-5 text-center">
+              <div class="quest-wheel mb-3">🎲</div>
+              <h3 class="mb-3">Today's Emotional Side Quest</h3>
+              <p id="questText" class="fun-text mb-4">Click the button and get a playful challenge in under 3 seconds.</p>
+              <button id="rollQuestBtn" class="btn btn-primary btn-lg px-4">Roll a Quest</button>
+              <div class="mt-4">
+                <span id="questTag" class="quest-tag d-none"></span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Tomorrow's Emotional Forecast -->
-        <div class="col-lg-8">
-          <div class="card fun-card border-0" style="background: linear-gradient(135deg, #f5f4ff 0%, #e9e7ff 100%); border: 2px solid #e9e7ff !important;">
+          <!-- Tomorrow's Emotional Forecast -->
+          <div class="card fun-card border-0 mb-4" style="background: linear-gradient(135deg, #f5f4ff 0%, #e9e7ff 100%); border: 2px solid #e9e7ff !important;">
             <div class="card-body p-4 text-center">
               <h4 class="mb-3">🔮 Tomorrow's Emotional Forecast</h4>
               <div id="predictionLoading" class="text-muted">
@@ -76,7 +76,7 @@
                 <div class="prediction-emoji mb-3" id="predictionEmoji">🌈</div>
                 <h5 class="fw-bold mb-2" id="predictionMood">Mixed Vibes</h5>
                 <p class="text-muted mb-0" id="predictionMessage">Expect emotional variety. Stay open 🌈</p>
-                <small class="text-muted d-block mt-3" style="font-size: 0.85rem;">Based on your last 5 entries</small>
+                <small class="text-muted d-block mt-3" style="font-size: 0.85rem;">Based on all your entries</small>
               </div>
               <div id="predictionNoData" class="d-none text-muted">
                 <div class="mb-2" style="font-size: 3rem; opacity: 0.5;">📊</div>
@@ -84,9 +84,7 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="col-lg-8">
           <div class="card fun-card border-0">
             <div class="card-body p-4">
               <h4 class="mb-3">⚡ Bonus streak boosters</h4>
@@ -101,9 +99,10 @@
           </div>
         </div>
       </div>
+    </div>
   </main>
 
-  <footer class="footer">
+  <footer class="footer w-100 py-4">
     <div class="container text-center">
       <p class="mb-0">Mood Quest complete? Log it in your journal ✨</p>
     </div>
@@ -137,6 +136,8 @@
     import { supabase } from './js/supabase.js'
     import { getCurrentUser } from './js/auth.js'
 
+    let predictionChannel = null
+
     // Mood to emoji mapping
     const moodEmojiMap = {
       happy: '😊',
@@ -163,7 +164,7 @@
       mixed: 'Expect emotional variety. Stay open and flexible 🌈'
     }
 
-    // Predict tomorrow's mood based on last 5 entries
+    // Predict tomorrow's mood based on all entries
     async function predictTomorrowMood() {
       const predictionLoading = document.getElementById('predictionLoading')
       const predictionResult = document.getElementById('predictionResult')
@@ -185,13 +186,12 @@
           return
         }
 
-        // Fetch last 5 entries
+        // Fetch all entries so each new mood can influence the prediction
         const { data: entries, error } = await supabase
           .from('moods')
           .select('mood')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(5)
 
         if (error) throw error
 
@@ -253,8 +253,36 @@
       }
     }
 
-    // Run prediction on page load
-    predictTomorrowMood()
+    async function subscribeToMoodChanges() {
+      const user = await getCurrentUser()
+      if (!user) return
+
+      predictionChannel = supabase
+        .channel(`mood-prediction-${user.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'moods',
+            filter: `user_id=eq.${user.id}`
+          },
+          async () => {
+            await predictTomorrowMood()
+          }
+        )
+        .subscribe()
+    }
+
+    // Run prediction on page load and keep it in sync with new moods
+    await predictTomorrowMood()
+    await subscribeToMoodChanges()
+
+    window.addEventListener('beforeunload', async () => {
+      if (predictionChannel) {
+        await supabase.removeChannel(predictionChannel)
+      }
+    })
   </script>
   <script type="module" src="/src/main.js"></script>
 </body>

@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-import { getCurrentUser } from './auth.js'
+import { getCurrentUser, requireAuth } from './auth.js'
 
 // === Emotion Timeline Replay ===
 const moodToEmoji = {
@@ -257,3 +257,71 @@ export async function deleteMoodEntry(id) {
     return { success: false, error: error.message }
   }
 }
+
+// ===== Dashboard page UI initialization =====
+async function loadDashboardEntries(moodFilter = 'all') {
+  const entriesContainer = document.getElementById('entriesContainer')
+  const loadingSpinner = document.getElementById('loadingSpinner')
+  const emptyState = document.getElementById('emptyState')
+
+  if (!entriesContainer || !loadingSpinner || !emptyState) return
+
+  // Loading state
+  loadingSpinner.classList.remove('d-none')
+  entriesContainer.classList.add('d-none')
+  emptyState.classList.add('d-none')
+
+  const result = await getMoodEntries(moodFilter)
+
+  // Error or unauthenticated
+  if (!result.success) {
+    loadingSpinner.classList.add('d-none')
+    emptyState.classList.remove('d-none')
+
+    const emptyTitle = emptyState.querySelector('h3')
+    const emptyText = emptyState.querySelector('p')
+    if (emptyTitle) emptyTitle.textContent = 'Could not load moods'
+    if (emptyText) emptyText.textContent = result.error || 'Please refresh and try again.'
+    return
+  }
+
+  const entries = result.entries || []
+
+  // Empty state
+  if (entries.length === 0) {
+    loadingSpinner.classList.add('d-none')
+    emptyState.classList.remove('d-none')
+    return
+  }
+
+  // Render cards
+  const { renderMoodCard } = await import('./ui-helpers.js')
+  entriesContainer.innerHTML = ''
+  entries.forEach((entry) => {
+    entriesContainer.appendChild(renderMoodCard(entry))
+  })
+
+  loadingSpinner.classList.add('d-none')
+  entriesContainer.classList.remove('d-none')
+}
+
+async function initDashboardPage() {
+  const page = document.body?.dataset?.page
+  if (page !== 'dashboard') return
+
+  const authenticated = await requireAuth()
+  if (!authenticated) return
+
+  const moodFilter = document.getElementById('moodFilter')
+  if (moodFilter) {
+    moodFilter.addEventListener('change', (e) => {
+      loadDashboardEntries(e.target.value)
+    })
+  }
+
+  await loadDashboardEntries('all')
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDashboardPage()
+})
