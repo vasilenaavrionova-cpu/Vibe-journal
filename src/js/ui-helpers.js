@@ -77,7 +77,7 @@ async function handleFormSubmit(entryId, createMoodEntry, updateMoodEntry) {
 
     if (result.success) {
       alert(entryId ? 'Mood entry updated!' : 'Mood entry created!')
-      window.location.href = '/dashboard.html'
+      window.location.href = 'dashboard.html'
     } else {
       alert(`Error: ${result.error}`)
     }
