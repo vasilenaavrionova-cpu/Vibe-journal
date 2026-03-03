@@ -3,6 +3,44 @@ import { login, logout, getCurrentUser, requireAuth, requireGuest } from './js/a
 
 console.log('✓ MAIN.JS LOADED')
 
+// ===== DARK MODE =====
+function initDarkMode() {
+	// Check localStorage on page load
+	const isDarkMode = localStorage.getItem('darkMode') === 'true'
+	if (isDarkMode) {
+		document.documentElement.classList.add('dark-mode')
+	}
+
+	// Get or create toggle button
+	let toggleBtn = document.getElementById('darkModeToggle')
+	if (!toggleBtn) {
+		// Find navbar and add toggle button if it doesn't exist
+		const navbar = document.querySelector('.navbar')
+		if (navbar) {
+			const navbarNav = navbar.querySelector('.navbar-nav')
+			if (navbarNav) {
+				const toggleItem = document.createElement('li')
+				toggleItem.className = 'nav-item'
+				toggleItem.innerHTML = `<button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark</button>`
+				navbarNav.appendChild(toggleItem)
+				toggleBtn = document.getElementById('darkModeToggle')
+			}
+		}
+	}
+
+	// Add click handler
+	if (toggleBtn) {
+		toggleBtn.addEventListener('click', () => {
+			const isDark = document.documentElement.classList.toggle('dark-mode')
+			localStorage.setItem('darkMode', isDark)
+			toggleBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark'
+		})
+
+		// Set initial button text
+		toggleBtn.textContent = isDarkMode ? '☀️ Light' : '🌙 Dark'
+	}
+}
+
 function getPageName() {
 	return document.body?.dataset?.page || ''
 }
@@ -60,6 +98,9 @@ async function initInfoPage() {
 }
 
 async function bootstrap() {
+	// Initialize dark mode first (on all pages)
+	initDarkMode()
+
 	const page = getPageName()
 
 	if (page === 'login') {

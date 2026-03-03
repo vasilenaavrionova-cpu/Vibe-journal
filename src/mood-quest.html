@@ -88,6 +88,31 @@
           </div>
         </div>
 
+        <!-- Tomorrow's Emotional Forecast -->
+        <div class="col-lg-8">
+          <div class="card fun-card border-0" style="background: linear-gradient(135deg, #f5f4ff 0%, #e9e7ff 100%); border: 2px solid #e9e7ff !important;">
+            <div class="card-body p-4 text-center">
+              <h4 class="mb-3">🔮 Tomorrow's Emotional Forecast</h4>
+              <div id="predictionLoading" class="text-muted">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                Analyzing your recent vibes...
+              </div>
+              <div id="predictionResult" class="d-none">
+                <div class="prediction-emoji mb-3" id="predictionEmoji">🌈</div>
+                <h5 class="fw-bold mb-2" id="predictionMood">Mixed Vibes</h5>
+                <p class="text-muted mb-0" id="predictionMessage">Expect emotional variety. Stay open 🌈</p>
+                <small class="text-muted d-block mt-3" style="font-size: 0.85rem;">Based on your last 5 entries</small>
+              </div>
+              <div id="predictionNoData" class="d-none text-muted">
+                <div class="mb-2" style="font-size: 3rem; opacity: 0.5;">📊</div>
+                <p>Not enough data to predict. Add more entries to unlock this feature!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-lg-8">
           <div class="card fun-card border-0">
             <div class="card-body p-4">

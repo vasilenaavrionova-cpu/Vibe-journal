@@ -11,7 +11,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);">
     <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="/src/index.html">
+      <a class="navbar-brand fw-bold" href="/dashboard.html">
         <span style="font-size: 1.8rem; margin-right: 0.5rem;">✨</span>Vibe Journal
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -20,19 +20,16 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a href="/src/info.html" class="nav-link">Info</a>
+            <a href="./info.html" class="nav-link">Info</a>
           </li>
           <li class="nav-item">
-            <a href="/src/dashboard.html" class="nav-link">Dashboard</a>
+            <a href="./mood-quest.html" class="nav-link">Mood Quest</a>
           </li>
           <li class="nav-item">
-            <a href="/src/mood-quest.html" class="nav-link">Mood Quest</a>
+            <a href="./vibe-lab.html" class="nav-link">Vibe Lab</a>
           </li>
           <li class="nav-item">
-            <a href="/src/vibe-lab.html" class="nav-link">Vibe Lab</a>
-          </li>
-          <li class="nav-item">
-            <a href="/src/add-entry.html" class="btn btn-light btn-sm me-2">+ New Entry</a>
+            <a href="./add-entry.html" class="btn btn-light btn-sm me-2">+ New Mood</a>
           </li>
           <li class="nav-item">
             <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
@@ -51,6 +48,17 @@
           <h1 class="display-5 fw-bold mb-2">Your Mood Journal</h1>
           <p class="text-muted lead">Track your emotions and precious moments</p>
           <hr class="my-3" style="opacity: 0.2;">
+          <!-- Emotion Timeline Replay Button -->
+          <button id="replay-timeline-btn" class="btn btn-outline-primary mb-3">
+            <span class="me-2">🔄</span> Replay My Week
+          </button>
+          <!-- Timeline Replay Modal Overlay -->
+          <div id="timeline-replay-overlay" class="timeline-replay-overlay d-none">
+            <div class="timeline-replay-modal">
+              <div id="timeline-replay-content"></div>
+              <button id="timeline-replay-close" class="btn btn-secondary mt-3">Close</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -99,83 +107,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module">
-    import { logout, getCurrentUser } from './js/auth.js'
-    import { getMoodEntries } from './js/dashboard.js'
-    import { renderMoodCard } from './js/ui-helpers.js'
-
-    console.log('✓ DASHBOARD PAGE LOADED')
-    
-    // Wait a bit for session to be ready
-    await new Promise(r => setTimeout(r, 500))
-    
-    const user = await getCurrentUser()
-    console.log('Dashboard user check:', user ? `✓ ${user.email}` : '❌ Not logged in')
-    
-    if (!user) {
-      console.log('⚠️ Not authenticated, redirecting to login')
-      window.location.href = '/src/login.html'
-      throw new Error('User not authenticated')
-    }
-
-    const entriesContainer = document.getElementById('entriesContainer')
-    const loadingSpinner = document.getElementById('loadingSpinner')
-    const emptyState = document.getElementById('emptyState')
-    const logoutBtn = document.getElementById('logoutBtn')
-
-    // Load and display entries
-    async function loadDashboard(moodFilter = 'all') {
-      console.log('📚 Loading mood entries...', moodFilter !== 'all' ? `filtered by: ${moodFilter}` : '')
-      const result = await getMoodEntries(moodFilter)
-      loadingSpinner.classList.add('d-none')
-
-      if (result.success) {
-        const entries = result.entries
-        console.log(`✓ Loaded ${entries.length} mood entries`)
-
-        // Clear existing entries
-        entriesContainer.innerHTML = ''
-        entriesContainer.classList.add('d-none')
-        emptyState.classList.add('d-none')
-
-        if (entries.length === 0) {
-          emptyState.classList.remove('d-none')
-        } else {
-          entriesContainer.classList.remove('d-none')
-          entries.forEach((entry) => {
-            const card = renderMoodCard(entry)
-            entriesContainer.appendChild(card)
-          })
-        }
-      } else {
-        console.error('❌ Error loading entries:', result.error)
-      }
-    }
-
-    // Handle logout
-    logoutBtn.addEventListener('click', async () => {
-      const result = await logout()
-      if (result.success) {
-        console.log('✓ Logged out')
-        window.location.href = '/src/login.html'
-      } else {
-        console.error('❌ Logout error:', result.error)
-      }
-    })
-
-    // Handle mood filter change
-    const moodFilter = document.getElementById('moodFilter')
-    moodFilter.addEventListener('change', (e) => {
-      const selectedMood = e.target.value
-      console.log('🎭 Filter changed to:', selectedMood)
-      loadingSpinner.classList.remove('d-none')
-      entriesContainer.classList.add('d-none')
-      emptyState.classList.add('d-none')
-      loadDashboard(selectedMood)
-    })
-
-    // Load dashboard on page load
-    loadDashboard()
-  </script>
+  <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>

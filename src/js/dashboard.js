@@ -1,6 +1,113 @@
 import { supabase } from './supabase.js'
 import { getCurrentUser } from './auth.js'
 
+// === Emotion Timeline Replay ===
+const moodToEmoji = {
+  happy: "😃",
+  sad: "😢",
+  neutral: "😐",
+  angry: "😠",
+  excited: "🤩",
+  anxious: "😰",
+  tired: "😴",
+  calm: "😌",
+  // Add more as needed
+};
+
+const replayBtn = document.getElementById('replay-timeline-btn');
+const overlay = document.getElementById('timeline-replay-overlay');
+const content = document.getElementById('timeline-replay-content');
+const closeBtn = document.getElementById('timeline-replay-close');
+let isReplaying = false;
+
+if (replayBtn && overlay && content && closeBtn) {
+  replayBtn.addEventListener('click', async () => {
+    if (isReplaying) return;
+    isReplaying = true;
+    replayBtn.disabled = true;
+    await startTimelineReplay();
+    replayBtn.disabled = false;
+    isReplaying = false;
+  });
+
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('d-none');
+    content.innerHTML = '';
+  });
+}
+
+async function startTimelineReplay() {
+  overlay.classList.remove('d-none');
+  content.innerHTML = '<div class="timeline-replay-entry">Loading...</div>';
+  const user = await getCurrentUser();
+  if (!user) {
+    content.innerHTML = '<div class="timeline-replay-entry">Not authenticated.</div>';
+    return;
+  }
+  const { data, error } = await supabase
+    .from('moods')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true })
+    .limit(7);
+  if (error || !data || data.length === 0) {
+    content.innerHTML = '<div class="timeline-replay-entry">No entries found for this week.</div>';
+    return;
+  }
+  const entries = data.map(entry => ({
+    mood: entry.mood,
+    emoji: moodToEmoji[entry.mood] || "📝",
+    date: new Date(entry.created_at).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+    text: entry.text ? (entry.text.length > 60 ? entry.text.slice(0, 57) + "..." : entry.text) : (entry.description ? (entry.description.length > 60 ? entry.description.slice(0, 57) + "..." : entry.description) : "")
+  }));
+  for (let i = 0; i < entries.length; i++) {
+    await showReplayEntry(entries[i]);
+    if (i < entries.length - 1) await fadeOutReplayEntry();
+  }
+  showReplaySummary(entries);
+}
+function showReplayEntry(entry) {
+  return new Promise(resolve => {
+    content.innerHTML = `
+      <div class="timeline-replay-entry fade-in">
+        <div class="timeline-replay-emoji">${entry.emoji}</div>
+        <div class="timeline-replay-date">${entry.date}</div>
+        <div class="timeline-replay-text">${entry.text}</div>
+      </div>
+    `;
+    setTimeout(resolve, 1500);
+  });
+}
+function fadeOutReplayEntry() {
+  return new Promise(resolve => {
+    const entryDiv = content.querySelector('.timeline-replay-entry');
+    entryDiv.classList.remove('fade-in');
+    entryDiv.classList.add('fade-out');
+    setTimeout(resolve, 600);
+  });
+}
+function showReplaySummary(entries) {
+  const moodCounts = {};
+  entries.forEach(e => {
+    moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
+  });
+  let maxMood = entries[0].mood, maxCount = 0;
+  for (const mood in moodCounts) {
+    if (moodCounts[mood] > maxCount) {
+      maxMood = mood;
+      maxCount = moodCounts[mood];
+    }
+  }
+  const emoji = moodToEmoji[maxMood] || "📝";
+  content.innerHTML = `
+    <div class="timeline-replay-entry fade-in">
+      <div class="timeline-replay-summary">
+        This week you felt mostly <span style="color:#6366f1">${maxMood.toUpperCase()}</span> (${maxCount} times) ${emoji}
+      </div>
+    </div>
+  `;
+}
+
 // Get all mood entries for current user (with optional mood filter)
 export async function getMoodEntries(moodFilter = 'all') {
   try {

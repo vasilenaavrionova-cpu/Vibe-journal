@@ -172,14 +172,17 @@ function escapeHtml(text) {
 
 // Make deleteEntry globally available
 window.deleteEntry = async function (id) {
-  if (confirm('Are you sure you want to delete this entry?')) {
-    const { deleteMoodEntry } = await import('./dashboard.js')
-    const result = await deleteMoodEntry(id)
-    if (result.success) {
-      alert('Entry deleted!')
-      window.location.reload()
-    } else {
-      alert(`Error: ${result.error}`)
-    }
+  // Show confirmation dialog before deleting
+  const confirmed = confirm('Delete this journal entry? This action cannot be undone.')
+  if (!confirmed) return
+
+  const { deleteMoodEntry } = await import('./dashboard.js')
+  const result = await deleteMoodEntry(id)
+  
+  if (result.success) {
+    alert('Entry deleted!')
+    window.location.reload()
+  } else {
+    alert(`Error: ${result.error}`)
   }
 }
